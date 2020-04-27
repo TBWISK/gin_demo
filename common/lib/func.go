@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
-	dlog "tbwisk/common/log"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -16,7 +15,10 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	dlog "tbwisk/common/log"
 	"time"
+
+	"github.com/TBWISK/goconf"
 )
 
 var TimeLocation *time.Location
@@ -29,11 +31,13 @@ var LocalIP = net.ParseIP("127.0.0.1")
 //函数传入配置文件 Init("./conf/dev/")
 //如果配置文件为空，会从命令行中读取 	  -config conf/dev/
 func Init(configPath string) error {
-	return InitModule(configPath,[]string{"base","mysql","redis"})
+	return InitModule(configPath, []string{"base", "mysql", "redis"})
 }
 
+var cparse *goconf.ConfigParse
+
 //模块初始化
-func InitModule(configPath string,modules []string) error {
+func InitModule(configPath string, modules []string) error {
 	var conf *string
 	if len(configPath) > 0 {
 		conf = &configPath
@@ -41,11 +45,11 @@ func InitModule(configPath string,modules []string) error {
 		conf = flag.String("config", "", "input config file like ./conf/dev/")
 		flag.Parse()
 	}
-	if *conf == "" {
-		flag.Usage()
-		os.Exit(1)
-	}
-
+	// if *conf == "" {
+	// 	flag.Usage()
+	// 	os.Exit(1)
+	// }
+	cparse = goconf.NewConfigParse(configPath)
 	log.Println("------------------------------------------------------------------------")
 	log.Printf("[INFO]  config=%s\n", *conf)
 	log.Printf("[INFO] %s\n", " start loading resources.")
@@ -56,39 +60,37 @@ func InitModule(configPath string,modules []string) error {
 		LocalIP = ips[0]
 	}
 
-	// 解析配置文件目录
-	if err := ParseConfPath(*conf); err != nil {
-		return err
-	}
+	// // 解析配置文件目录
+	// if err := ParseConfPath(*conf); err != nil {
+	// 	return err
+	// }
 
-	//初始化配置文件
-	if err := InitViperConf(); err != nil {
-		return err
-	}
+	// //初始化配置文件
+	// if err := InitViperConf(); err != nil {
+	// 	return err
+	// }
 
 	// 加载base配置
-	if InArrayString("base",modules){
+	if InArrayString("base", modules) {
 		if err := InitBaseConf(GetConfPath("base")); err != nil {
 			fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitBaseConf:"+err.Error())
 		}
 	}
 
 	// 加载redis配置
-	if InArrayString("redis",modules) {
-		if err := InitRedisConf(GetConfPath("redis_map")); err != nil {
-			fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitRedisConf:"+err.Error())
-		}
-	}
-
+	// if InArrayString("redis", modules) {
+	// 	if err := InitRedisConf(GetConfPath("redis_map")); err != nil {
+	// 		fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitRedisConf:"+err.Error())
+	// 	}
+	// }
 	// 加载mysql配置并初始化实例
-	if InArrayString("mysql",modules) {
-		if err := InitDBPool(GetConfPath("mysql_map")); err != nil {
-			fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitDBPool:"+err.Error())
-		}
-	}
-
+	// if InArrayString("mysql", modules) {
+	// 	if err := InitDBPool(GetConfPath("mysql_map")); err != nil {
+	// 		fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitDBPool:"+err.Error())
+	// 	}
+	// }
 	// 设置时区
-	if location, err := time.LoadLocation(ConfBase.TimeLocation); err != nil {
+	if location, err := time.LoadLocation(cparse.GetConfig().Section("base").Key("time_location").String()); err != nil {
 		return err
 	} else {
 		TimeLocation = location
@@ -363,9 +365,9 @@ func GetLocalIPs() (ips []net.IP) {
 	return ips
 }
 
-func InArrayString(s string,arr []string) bool{
-	for _,i:=range arr{
-		if i==s{
+func InArrayString(s string, arr []string) bool {
+	for _, i := range arr {
+		if i == s {
 			return true
 		}
 	}

@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	lib.InitModule("./conf/dev/", []string{"base", "mysql", "redis"})
+	lib.InitModule("/Users/tbwisk/coding/gitee/gin_demo/", []string{"base", "mysql", "redis"})
 	defer lib.Destroy()
 	public.InitMysql()
 	public.InitValidate()
-	router.HttpServerRun()
+	router.HTTPServerRun()
 	public.GormPool.AutoMigrate(&dao.Area{})
 	public.GormPool.AutoMigrate(&dao.User{})
 
@@ -23,5 +23,5 @@ func main() {
 	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	router.HttpServerStop()
+	router.HTTPServerStop()
 }

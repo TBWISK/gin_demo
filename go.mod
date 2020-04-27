@@ -1,6 +1,9 @@
 module tbwisk
 
+go 1.14
+
 require (
+	github.com/TBWISK/goconf v0.0.3
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/e421083458/golang_common v1.0.3
 	github.com/garyburd/redigo v1.6.0
