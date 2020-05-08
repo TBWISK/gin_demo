@@ -2,8 +2,8 @@ package public
 
 import (
 	"fmt"
-	"tbwisk/common/lib"
 
+	"github.com/TBWISK/goconf"
 	"github.com/jinzhu/gorm"
 )
 
@@ -12,12 +12,14 @@ var (
 )
 
 func InitMysql() error {
-	dbpool, err := lib.GetGormPool("default")
-
-	if err != nil {
-		return err
-	}
-	GormPool = dbpool
+	GormPool = goconf.InitGorm("demo")
+	// dbpool, err := lib.GetGormPool("demo")
+	// fmt.Println("InitMysql", dbpool, err)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return err
+	// }
+	// GormPool = dbpool
 	fmt.Println(GormPool.DB().Ping())
 
 	return nil

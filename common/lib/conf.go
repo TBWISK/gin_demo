@@ -1,22 +1,10 @@
 package lib
 
 import (
-	"database/sql"
 	"strings"
-	dlog "tbwisk/common/log"
 
 	"github.com/jinzhu/gorm"
 )
-
-type BaseConf struct {
-	DebugMode    string    `mapstructure:"debug_mode"`
-	TimeLocation string    `mapstructure:"time_location"`
-	Log          LogConfig `mapstructure:"log"`
-	Base         struct {
-		DebugMode    string `mapstructure:"debug_mode"`
-		TimeLocation string `mapstructure:"time_location"`
-	} `mapstructure:"base"`
-}
 
 type LogConfFileWriter struct {
 	On              bool   `mapstructure:"on"`
@@ -60,11 +48,7 @@ type MySQLConf struct {
 // 	Downgrade bool     `mapstructure:"down_grade"`
 // }
 
-//全局变量
-var ConfBase *BaseConf
-var DBMapPool map[string]*sql.DB
 var GORMMapPool map[string]*gorm.DB
-var DBDefaultPool *sql.DB
 var GORMDefaultPool *gorm.DB
 
 // var ConfRedis *RedisConf
@@ -75,53 +59,54 @@ var GORMDefaultPool *gorm.DB
 // func GetBaseConf() *BaseConf {
 // 	return ConfBase
 // }
+var DebugMode string
 
-func InitBaseConf(path string) error {
-	ConfBase = &BaseConf{}
-	err := ParseConfig(path, ConfBase)
-	if err != nil {
-		return err
-	}
+// func InitBaseConf(path string) error {
+// 	ConfBase = &BaseConf{}
+// 	err := ParseConfig(path, ConfBase)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	if ConfBase.DebugMode == "" {
-		if ConfBase.Base.DebugMode != "" {
-			ConfBase.DebugMode = ConfBase.Base.DebugMode
-		} else {
-			ConfBase.DebugMode = "debug"
-		}
-	}
-	if ConfBase.TimeLocation == "" {
-		if ConfBase.Base.TimeLocation != "" {
-			ConfBase.TimeLocation = ConfBase.Base.TimeLocation
-		} else {
-			ConfBase.TimeLocation = "Asia/Chongqing"
-		}
-	}
-	if ConfBase.Log.Level == "" {
-		ConfBase.Log.Level = "trace"
-	}
+// 	if ConfBase.DebugMode == "" {
+// 		if ConfBase.Base.DebugMode != "" {
+// 			ConfBase.DebugMode = ConfBase.Base.DebugMode
+// 		} else {
+// 			ConfBase.DebugMode = "debug"
+// 		}
+// 	}
+// 	if ConfBase.TimeLocation == "" {
+// 		if ConfBase.Base.TimeLocation != "" {
+// 			ConfBase.TimeLocation = ConfBase.Base.TimeLocation
+// 		} else {
+// 			ConfBase.TimeLocation = "Asia/Chongqing"
+// 		}
+// 	}
+// 	if ConfBase.Log.Level == "" {
+// 		ConfBase.Log.Level = "trace"
+// 	}
 
-	//配置日志
-	logConf := dlog.LogConfig{
-		Level: ConfBase.Log.Level,
-		FW: dlog.ConfFileWriter{
-			On:              ConfBase.Log.FW.On,
-			LogPath:         ConfBase.Log.FW.LogPath,
-			RotateLogPath:   ConfBase.Log.FW.RotateLogPath,
-			WfLogPath:       ConfBase.Log.FW.WfLogPath,
-			RotateWfLogPath: ConfBase.Log.FW.RotateWfLogPath,
-		},
-		CW: dlog.ConfConsoleWriter{
-			On:    ConfBase.Log.CW.On,
-			Color: ConfBase.Log.CW.Color,
-		},
-	}
-	if err := dlog.SetupDefaultLogWithConf(logConf); err != nil {
-		panic(err)
-	}
-	dlog.SetLayout("2006-01-02T15:04:05.000")
-	return nil
-}
+// 	//配置日志
+// 	logConf := dlog.LogConfig{
+// 		Level: ConfBase.Log.Level,
+// 		FW: dlog.ConfFileWriter{
+// 			On:              ConfBase.Log.FW.On,
+// 			LogPath:         ConfBase.Log.FW.LogPath,
+// 			RotateLogPath:   ConfBase.Log.FW.RotateLogPath,
+// 			WfLogPath:       ConfBase.Log.FW.WfLogPath,
+// 			RotateWfLogPath: ConfBase.Log.FW.RotateWfLogPath,
+// 		},
+// 		CW: dlog.ConfConsoleWriter{
+// 			On:    ConfBase.Log.CW.On,
+// 			Color: ConfBase.Log.CW.Color,
+// 		},
+// 	}
+// 	if err := dlog.SetupDefaultLogWithConf(logConf); err != nil {
+// 		panic(err)
+// 	}
+// 	dlog.SetLayout("2006-01-02T15:04:05.000")
+// 	return nil
+// }
 
 //
 //func InitLogger(path string) error {

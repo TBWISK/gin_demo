@@ -17,7 +17,7 @@ var (
 
 //HTTPServerRun 服务启动
 func HTTPServerRun() {
-	gin.SetMode(lib.ConfBase.DebugMode)
+	gin.SetMode(lib.DebugMode)
 	r := InitRouter()
 	HTTPSrvHandler = &http.Server{
 		Addr:           lib.GetStringConf("http", "addr"),

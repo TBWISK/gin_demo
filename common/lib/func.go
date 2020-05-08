@@ -60,42 +60,12 @@ func InitModule(configPath string, modules []string) error {
 		LocalIP = ips[0]
 	}
 
-	// // 解析配置文件目录
-	// if err := ParseConfPath(*conf); err != nil {
+	// // 设置时区
+	// if location, err := time.LoadLocation(cparse.GetConfig().Section("base").Key("time_location").String()); err != nil {
 	// 	return err
+	// } else {
+	// 	TimeLocation = location
 	// }
-
-	// //初始化配置文件
-	// if err := InitViperConf(); err != nil {
-	// 	return err
-	// }
-
-	// 加载base配置
-	if InArrayString("base", modules) {
-		if err := InitBaseConf(GetConfPath("base")); err != nil {
-			fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitBaseConf:"+err.Error())
-		}
-	}
-
-	// 加载redis配置
-	// if InArrayString("redis", modules) {
-	// 	if err := InitRedisConf(GetConfPath("redis_map")); err != nil {
-	// 		fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitRedisConf:"+err.Error())
-	// 	}
-	// }
-	// 加载mysql配置并初始化实例
-	// if InArrayString("mysql", modules) {
-	// 	if err := InitDBPool(GetConfPath("mysql_map")); err != nil {
-	// 		fmt.Printf("[ERROR] %s%s\n", time.Now().Format(TimeFormat), " InitDBPool:"+err.Error())
-	// 	}
-	// }
-	// 设置时区
-	if location, err := time.LoadLocation(cparse.GetConfig().Section("base").Key("time_location").String()); err != nil {
-		return err
-	} else {
-		TimeLocation = location
-	}
-
 	log.Printf("[INFO] %s\n", " success loading resources.")
 	log.Println("------------------------------------------------------------------------")
 	return nil
@@ -105,7 +75,7 @@ func InitModule(configPath string, modules []string) error {
 func Destroy() {
 	log.Println("------------------------------------------------------------------------")
 	log.Printf("[INFO] %s\n", " start destroy resources.")
-	CloseDB()
+	// CloseDB()
 	dlog.Close()
 	log.Printf("[INFO] %s\n", " success destroy resources.")
 }

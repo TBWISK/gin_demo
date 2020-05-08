@@ -10,10 +10,6 @@ import (
 
 func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	//写入gin日志
-	//gin.DisableConsoleColor()
-	//f, _ := os.Create("gin.log")
-	//gin.DefaultWriter = io.MultiWriter(f)
-	//gin.DefaultErrorWriter = io.MultiWriter(f)
 	router := gin.Default()
 	router.Use(middlewares...)
 
