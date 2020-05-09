@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"tbwisk/common/lib"
+	"tbwisk/public"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,19 +17,19 @@ var (
 
 //HTTPServerRun 服务启动
 func HTTPServerRun() {
-	gin.SetMode(lib.DebugMode)
+	gin.SetMode(public.DebugMode)
 	r := InitRouter()
 	HTTPSrvHandler = &http.Server{
-		Addr:           lib.GetStringConf("http", "addr"),
+		Addr:           public.GetStringConf("http", "addr"),
 		Handler:        r,
-		ReadTimeout:    time.Duration(lib.GetIntConf("http", "read_timeout")) * time.Second,
-		WriteTimeout:   time.Duration(lib.GetIntConf("http", "write_timeout")) * time.Second,
-		MaxHeaderBytes: 1 << uint(lib.GetIntConf("http", "max_header_bytes")),
+		ReadTimeout:    time.Duration(public.GetIntConf("http", "read_timeout")) * time.Second,
+		WriteTimeout:   time.Duration(public.GetIntConf("http", "write_timeout")) * time.Second,
+		MaxHeaderBytes: 1 << uint(public.GetIntConf("http", "max_header_bytes")),
 	}
 	go func() {
-		log.Printf(" [INFO] HttpServerRun:%s\n", lib.GetStringConf("http", "addr"))
+		log.Printf(" [INFO] HttpServerRun:%s\n", public.GetStringConf("http", "addr"))
 		if err := HTTPSrvHandler.ListenAndServe(); err != nil {
-			log.Fatalf(" [ERROR] HttpServerRun:%s err:%v\n", lib.GetStringConf("http", "addr"), err)
+			log.Fatalf(" [ERROR] HttpServerRun:%s err:%v\n", public.GetStringConf("http", "addr"), err)
 		}
 	}()
 }

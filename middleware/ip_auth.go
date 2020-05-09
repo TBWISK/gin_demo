@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"fmt"
-	"tbwisk/common/lib"
+	"tbwisk/public"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +11,7 @@ import (
 func IPAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		isMatched := false
-		for _, host := range lib.GetStringSliceConf("base", "allow_ip") {
+		for _, host := range public.GetStringSliceConf("base", "allow_ip") {
 			if c.ClientIP() == host {
 				isMatched = true
 			}

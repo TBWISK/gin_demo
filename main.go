@@ -4,15 +4,14 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"tbwisk/common/lib"
 	"tbwisk/dao"
 	"tbwisk/public"
 	"tbwisk/router"
 )
 
 func main() {
-	lib.InitModule("/Users/tbwisk/coding/gitee/gin_demo/")
-	defer lib.Destroy()
+	public.InitModule("/Users/tbwisk/coding/gitee/gin_demo/")
+	defer public.Destroy()
 	public.InitMysql()
 	public.InitValidate()
 	router.HTTPServerRun()

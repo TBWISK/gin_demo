@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"tbwisk/common/lib"
 	"tbwisk/public"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +21,7 @@ func RecoveryMiddleware() gin.HandlerFunc {
 					"error": fmt.Sprint(err),
 					"stack": string(debug.Stack()),
 				})
-				if lib.DebugMode != "debug" {
+				if public.DebugMode != "debug" {
 					ResponseError(c, 500, errors.New("内部错误"))
 					return
 				} else {
