@@ -46,7 +46,7 @@ func InitModule(configPath string) error {
 	return nil
 }
 
-//公共初始化函数：支持两种方式设置配置文件
+//Init 公共初始化函数：支持两种方式设置配置文件
 //
 //函数传入配置文件 Init("./conf/dev/")
 //如果配置文件为空，会从命令行中读取 	  -config conf/dev/
@@ -54,6 +54,7 @@ func Init(configPath string) error {
 	return InitModule(configPath)
 }
 
+//DebugMode 模式
 var DebugMode string
 
 //GetStringConf 获取get配置信息
