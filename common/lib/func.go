@@ -19,7 +19,7 @@ var LocalIP = net.ParseIP("127.0.0.1")
 //函数传入配置文件 Init("./conf/dev/")
 //如果配置文件为空，会从命令行中读取 	  -config conf/dev/
 func Init(configPath string) error {
-	return InitModule(configPath, []string{"base", "mysql", "redis"})
+	return InitModule(configPath)
 }
 
 var cparse *goconf.ConfigParse
@@ -29,10 +29,6 @@ func InitModule(configPath string) error {
 
 	cparse = goconf.NewConfigParse(configPath)
 	// 设置ip信息，优先设置便于日志打印
-	ips := GetLocalIPs()
-	if len(ips) > 0 {
-		LocalIP = ips[0]
-	}
 
 	// // 设置时区
 	// if location, err := time.LoadLocation(cparse.GetConfig().Section("base").Key("time_location").String()); err != nil {

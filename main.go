@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	lib.InitModule("/Users/tbwisk/coding/gitee/gin_demo/", []string{"base", "mysql", "redis"})
+	lib.InitModule("/Users/tbwisk/coding/gitee/gin_demo/")
 	defer lib.Destroy()
 	public.InitMysql()
 	public.InitValidate()

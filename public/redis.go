@@ -18,15 +18,15 @@ func InitRedis() error {
 	return nil
 }
 
-//通过配置 执行redis
+//RedisConfDo 通过配置 执行redis
 func RedisConfDo(trace *TraceContext, name string, commandName string, args ...interface{}) (interface{}, error) {
 	pool, ok := redisPoolMap[name]
 	if ok != false {
-		// Log.TagError(trace, "_com_redis_failure", map[string]interface{}{
-		// 	"method": commandName,
-		// 	"err":    errors.New("RedisConnFactory_error:" + name),
-		// 	"bind":   args,
-		// })
+		TagError(trace, "_com_redis_failure", map[string]interface{}{
+			"method": commandName,
+			"err":    errors.New("RedisConnFactory_error:" + name),
+			"bind":   args,
+		})
 		return nil, errors.New("no redis pool")
 	}
 	c := pool.Get()

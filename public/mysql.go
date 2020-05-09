@@ -8,9 +8,11 @@ import (
 )
 
 var (
+	//GormPool gorm连接池
 	GormPool *gorm.DB
 )
 
+//InitMysql mysql初始化
 func InitMysql() error {
 	GormPool = goconf.InitGorm("demo")
 	// dbpool, err := lib.GetGormPool("demo")
