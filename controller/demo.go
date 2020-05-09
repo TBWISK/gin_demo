@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"tbwisk/common/lib"
 	"tbwisk/dao"
 	"tbwisk/dto"
 	"tbwisk/middleware"
@@ -40,9 +39,9 @@ func (demo *Demo) Dao(c *gin.Context) {
 
 func (demo *Demo) Redis(c *gin.Context) {
 	redisKey := "redis_key"
-	lib.RedisConfDo(public.GetTraceContext(c), "default",
+	public.RedisConfDo(public.GetTraceContext(c), "default",
 		"SET", 0, redisKey, "redis_value")
-	redisValue, err := redis.String(lib.RedisConfDo(public.GetTraceContext(c), "default",
+	redisValue, err := redis.String(public.RedisConfDo(public.GetTraceContext(c), "default",
 		"GET", 0, redisKey))
 	if err != nil {
 		middleware.ResponseError(c, 501, err)

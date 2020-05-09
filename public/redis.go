@@ -2,6 +2,7 @@ package public
 
 import (
 	"errors"
+	"fmt"
 	"tbwisk/common/lib"
 	"time"
 
@@ -36,20 +37,20 @@ func RedisConfDo(trace *lib.TraceContext, name string, commandName string, args 
 	reply, err := c.Do(commandName, args...)
 	endExecTime := time.Now()
 	if err != nil {
-		// Log.TagError(trace, "_com_redis_failure", map[string]interface{}{
-		// 	"method":    commandName,
-		// 	"err":       err,
-		// 	"bind":      args,
-		// 	"proc_time": fmt.Sprintf("%fs", endExecTime.Sub(startExecTime).Seconds()),
-		// })
+		TagError(trace, "_com_redis_failure", map[string]interface{}{
+			"method":    commandName,
+			"err":       err,
+			"bind":      args,
+			"proc_time": fmt.Sprintf("%fs", endExecTime.Sub(startExecTime).Seconds()),
+		})
 	} else {
 		replyStr, _ := redis.String(reply, nil)
-		// Log.TagInfo(trace, "_com_redis_success", map[string]interface{}{
-		// 	"method":    commandName,
-		// 	"bind":      args,
-		// 	"reply":     replyStr,
-		// 	"proc_time": fmt.Sprintf("%fs", endExecTime.Sub(startExecTime).Seconds()),
-		// })
+		TagInfo(trace, "_com_redis_success", map[string]interface{}{
+			"method":    commandName,
+			"bind":      args,
+			"reply":     replyStr,
+			"proc_time": fmt.Sprintf("%fs", endExecTime.Sub(startExecTime).Seconds()),
+		})
 	}
 	return reply, err
 }

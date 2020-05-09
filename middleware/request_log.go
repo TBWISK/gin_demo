@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"bytes"
-	"tbwisk/public"
-	"tbwisk/common/lib"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"tbwisk/common/lib"
+	"tbwisk/public"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 请求进入日志
@@ -25,7 +26,7 @@ func RequestInLog(c *gin.Context) {
 	bodyBytes, _ := ioutil.ReadAll(c.Request.Body)
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Write body back
 
-	lib.Log.TagInfo(traceContext, "_com_request_in", map[string]interface{}{
+	public.TagInfo(traceContext, "_com_request_in", map[string]interface{}{
 		"uri":    c.Request.RequestURI,
 		"method": c.Request.Method,
 		"args":   c.Request.PostForm,
