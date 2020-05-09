@@ -3,7 +3,6 @@ package public
 import (
 	"errors"
 	"fmt"
-	"tbwisk/common/lib"
 	"time"
 
 	"github.com/TBWISK/goconf"
@@ -20,7 +19,7 @@ func InitRedis() error {
 }
 
 //通过配置 执行redis
-func RedisConfDo(trace *lib.TraceContext, name string, commandName string, args ...interface{}) (interface{}, error) {
+func RedisConfDo(trace *TraceContext, name string, commandName string, args ...interface{}) (interface{}, error) {
 	pool, ok := redisPoolMap[name]
 	if ok != false {
 		// Log.TagError(trace, "_com_redis_failure", map[string]interface{}{

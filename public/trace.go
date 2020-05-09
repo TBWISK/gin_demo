@@ -11,14 +11,32 @@ import (
 	"time"
 )
 
+//Trace 跟踪
+type Trace struct {
+	TraceID     string
+	SpanID      string
+	Caller      string
+	SrcMethod   string
+	HintCode    int64
+	HintContent string
+}
+
+//TraceContext context
+type TraceContext struct {
+	Trace
+	CSpanID string
+}
+
+//NewTrace 跟踪
 func NewTrace() *TraceContext {
 	trace := &TraceContext{}
-	trace.TraceId = GetTraceId()
-	trace.SpanId = NewSpanId()
+	trace.TraceID = GetTraceID()
+	trace.SpanID = NewSpanID()
 	return trace
 }
 
-func NewSpanId() string {
+// NewSpanID 新跟踪id
+func NewSpanID() string {
 	timestamp := uint32(time.Now().Unix())
 	ipToLong := binary.BigEndian.Uint32(LocalIP.To4())
 	b := bytes.Buffer{}
@@ -27,11 +45,12 @@ func NewSpanId() string {
 	return b.String()
 }
 
-func GetTraceId() (traceId string) {
-	return calcTraceId(LocalIP.String())
+//GetTraceID 获取跟踪id
+func GetTraceID() (traceID string) {
+	return calcTraceID(LocalIP.String())
 }
 
-func calcTraceId(ip string) (traceId string) {
+func calcTraceID(ip string) (traceID string) {
 	now := time.Now()
 	timestamp := uint32(now.Unix())
 	timeNano := now.UnixNano()

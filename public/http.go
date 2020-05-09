@@ -8,16 +8,16 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"tbwisk/common/lib"
 	"time"
 )
 
-func HttpGET(trace *lib.TraceContext, urlString string, urlParams url.Values, msTimeout int, header http.Header) (*http.Response, []byte, error) {
+//HTTPGET http 请求
+func HTTPGET(trace *TraceContext, urlString string, urlParams url.Values, msTimeout int, header http.Header) (*http.Response, []byte, error) {
 	startTime := time.Now().UnixNano()
 	client := http.Client{
 		Timeout: time.Duration(msTimeout) * time.Millisecond,
 	}
-	urlString = AddGetDataToUrl(urlString, urlParams)
+	urlString = AddGetDataToURL(urlString, urlParams)
 	req, err := http.NewRequest("GET", urlString, nil)
 	if err != nil {
 		TagWarn(trace, DLTagHTTPFailed, map[string]interface{}{
@@ -67,7 +67,8 @@ func HttpGET(trace *lib.TraceContext, urlString string, urlParams url.Values, ms
 	return resp, body, nil
 }
 
-func HttpPOST(trace *lib.TraceContext, urlString string, urlParams url.Values, msTimeout int, header http.Header, contextType string) (*http.Response, []byte, error) {
+//HTTPPOST http post请求
+func HTTPPOST(trace *TraceContext, urlString string, urlParams url.Values, msTimeout int, header http.Header, contextType string) (*http.Response, []byte, error) {
 	startTime := time.Now().UnixNano()
 	client := http.Client{
 		Timeout: time.Duration(msTimeout) * time.Millisecond,
@@ -115,7 +116,8 @@ func HttpPOST(trace *lib.TraceContext, urlString string, urlParams url.Values, m
 	return resp, body, nil
 }
 
-func HttpJSON(trace *lib.TraceContext, urlString string, jsonContent string, msTimeout int, header http.Header) (*http.Response, []byte, error) {
+//HTTPJSON http post 返回json
+func HTTPJSON(trace *TraceContext, urlString string, jsonContent string, msTimeout int, header http.Header) (*http.Response, []byte, error) {
 	startTime := time.Now().UnixNano()
 	client := http.Client{
 		Timeout: time.Duration(msTimeout) * time.Millisecond,
@@ -160,7 +162,8 @@ func HttpJSON(trace *lib.TraceContext, urlString string, jsonContent string, msT
 	return resp, body, nil
 }
 
-func AddGetDataToUrl(urlString string, data url.Values) string {
+//AddGetDataToURL 添加数据到url上面
+func AddGetDataToURL(urlString string, data url.Values) string {
 	if strings.Contains(urlString, "?") {
 		urlString = urlString + "&"
 	} else {
@@ -169,25 +172,27 @@ func AddGetDataToUrl(urlString string, data url.Values) string {
 	return fmt.Sprintf("%s%s", urlString, data.Encode())
 }
 
-func addTrace2Header(request *http.Request, trace *lib.TraceContext) *http.Request {
-	traceId := trace.TraceId
-	cSpanId := lib.NewSpanId()
-	if traceId != "" {
-		request.Header.Set("header-rid", traceId)
+func addTrace2Header(request *http.Request, trace *TraceContext) *http.Request {
+	traceID := trace.TraceID
+	cSpanID := NewSpanID()
+	if traceID != "" {
+		request.Header.Set("header-rid", traceID)
 	}
-	if cSpanId != "" {
-		request.Header.Set("header-spanid", cSpanId)
+	if cSpanID != "" {
+		request.Header.Set("header-spanid", cSpanID)
 	}
-	trace.CSpanId = cSpanId
+	trace.CSpanID = cSpanID
 	return request
 }
 
+//GetMd5Hash 获取md5
 func GetMd5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+//Encode 解码
 func Encode(data string) (string, error) {
 	h := md5.New()
 	_, err := h.Write([]byte(data))
@@ -195,16 +200,4 @@ func Encode(data string) (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(h.Sum(nil)), nil
-}
-
-func ParseServerAddr(serverAddr string) (host, port string) {
-	serverInfo := strings.Split(serverAddr, ":")
-	if len(serverInfo) == 2 {
-		host = serverInfo[0]
-		port = serverInfo[1]
-	} else {
-		host = serverAddr
-		port = ""
-	}
-	return host, port
 }
