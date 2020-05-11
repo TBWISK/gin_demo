@@ -1,24 +1,17 @@
 package public
 
 import (
-	"fmt"
-	"tbwisk/common/lib"
-
+	"github.com/TBWISK/goconf"
 	"github.com/jinzhu/gorm"
 )
 
 var (
+	//GormPool gorm连接池
 	GormPool *gorm.DB
 )
 
+//InitMysql mysql初始化
 func InitMysql() error {
-	dbpool, err := lib.GetGormPool("default")
-
-	if err != nil {
-		return err
-	}
-	GormPool = dbpool
-	fmt.Println(GormPool.DB().Ping())
-
+	GormPool = goconf.InitGorm("demo")
 	return nil
 }

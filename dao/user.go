@@ -8,14 +8,14 @@ import (
 )
 
 type User struct {
-	Id       int       `json:"id" orm:"column(id);auto"`
-	Name     string    `json:"name" orm:"column(name);"`
-	Addr     string    `json:"addr" orm:"column(addr);"`
-	Age      int       `json:"age" orm:"column(age);"`
-	Birth    string    `json:"birth" orm:"column(birth);"`
-	Sex      int       `json:"sex" orm:"column(sex);"`
-	UpdateAt time.Time `json:"update_at" orm:"column(update_at); description:"更新时间"`
-	CreateAt time.Time `json:"create_at" orm:"column(create_at);type(datetime)" description:"创建时间"`
+	ID       int       `json:"id" gorm:"column(id);auto"`
+	Name     string    `json:"name" gorm:"column(name);"`
+	Addr     string    `json:"addr" gorm:"column(addr);"`
+	Age      int       `json:"age" gorm:"column(age);"`
+	Birth    string    `json:"birth" gorm:"column(birth);"`
+	Sex      int       `json:"sex" gorm:"column(sex);"`
+	UpdateAt time.Time `json:"update_at" gorm:"column(update_at);" description:"更新时间"`
+	CreateAt time.Time `json:"create_at" gorm:"column(create_at) type(datetime)" description:"创建时间"`
 }
 
 func (f *User) TableName() string {
@@ -66,7 +66,3 @@ func (f *User) Save() error {
 	}
 	return nil
 }
-
-// func init() {
-// 	public.GormPool.AutoMigrate(&User{})
-// }

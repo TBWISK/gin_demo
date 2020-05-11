@@ -1,4 +1,6 @@
 .vscode/
+*.exe
+temp
 .idea/vcs.xml
 .idea
 *.log

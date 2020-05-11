@@ -2,21 +2,21 @@ package middleware
 
 import (
 	"bytes"
-	"tbwisk/public"
-	"tbwisk/common/lib"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"tbwisk/public"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
-// 请求进入日志
+//RequestInLog 请求进入日志
 func RequestInLog(c *gin.Context) {
-	traceContext := lib.NewTrace()
-	if traceId := c.Request.Header.Get("com-header-rid"); traceId != "" {
-		traceContext.TraceId = traceId
+	traceContext := public.NewTrace()
+	if traceID := c.Request.Header.Get("com-header-rid"); traceID != "" {
+		traceContext.TraceID = traceID
 	}
-	if spanId := c.Request.Header.Get("com-header-spanid"); spanId != "" {
-		traceContext.SpanId = spanId
+	if spanID := c.Request.Header.Get("com-header-spanid"); spanID != "" {
+		traceContext.SpanID = spanID
 	}
 
 	c.Set("startExecTime", time.Now())
@@ -25,7 +25,7 @@ func RequestInLog(c *gin.Context) {
 	bodyBytes, _ := ioutil.ReadAll(c.Request.Body)
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes)) // Write body back
 
-	lib.Log.TagInfo(traceContext, "_com_request_in", map[string]interface{}{
+	public.TagInfo(traceContext, "_com_request_in", map[string]interface{}{
 		"uri":    c.Request.RequestURI,
 		"method": c.Request.Method,
 		"args":   c.Request.PostForm,
@@ -34,7 +34,7 @@ func RequestInLog(c *gin.Context) {
 	})
 }
 
-// 请求输出日志
+//RequestOutLog 请求输出日志
 func RequestOutLog(c *gin.Context) {
 	// after request
 	endExecTime := time.Now()
@@ -52,6 +52,7 @@ func RequestOutLog(c *gin.Context) {
 	})
 }
 
+//RequestLog 请求日志
 func RequestLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		RequestInLog(c)

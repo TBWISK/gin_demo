@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"encoding/json"
+	"tbwisk/public"
+
 	"github.com/gin-gonic/gin"
-	"tbwisk/common/lib"
 )
 
 type ResponseCode int
@@ -25,18 +26,18 @@ type Response struct {
 	ErrorCode ResponseCode `json:"errno"`
 	ErrorMsg  string       `json:"errmsg"`
 	Data      interface{}  `json:"data"`
-	TraceId   interface{}  `json:"trace_id"`
+	TraceID   interface{}  `json:"trace_id"`
 }
 
 func ResponseError(c *gin.Context, code ResponseCode, err error) {
 	trace, _ := c.Get("trace")
-	traceContext, _ := trace.(*lib.TraceContext)
-	traceId := ""
+	traceContext, _ := trace.(*public.TraceContext)
+	TraceID := ""
 	if traceContext != nil {
-		traceId = traceContext.TraceId
+		TraceID = traceContext.TraceID
 	}
 
-	resp := &Response{ErrorCode: code, ErrorMsg: err.Error(), Data: "", TraceId: traceId}
+	resp := &Response{ErrorCode: code, ErrorMsg: err.Error(), Data: "", TraceID: TraceID}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
 	c.Set("response", string(response))
@@ -45,13 +46,13 @@ func ResponseError(c *gin.Context, code ResponseCode, err error) {
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
 	trace, _ := c.Get("trace")
-	traceContext, _ := trace.(*lib.TraceContext)
-	traceId := ""
+	traceContext, _ := trace.(*public.TraceContext)
+	TraceID := ""
 	if traceContext != nil {
-		traceId = traceContext.TraceId
+		TraceID = traceContext.TraceID
 	}
 
-	resp := &Response{ErrorCode: SuccessCode, ErrorMsg: "", Data: data, TraceId: traceId}
+	resp := &Response{ErrorCode: SuccessCode, ErrorMsg: "", Data: data, TraceID: TraceID}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
 	c.Set("response", string(response))

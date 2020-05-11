@@ -6,7 +6,7 @@ import (
 	"tbwisk/dto"
 	"tbwisk/middleware"
 	"tbwisk/public"
-	"tbwisk/common/lib"
+
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 )
@@ -28,23 +28,23 @@ func (demo *Demo) Index(c *gin.Context) {
 }
 
 func (demo *Demo) Dao(c *gin.Context) {
-	if area,err:=(&dao.Area{}).Find(c.DefaultQuery("id","1"));err!=nil{
-		middleware.ResponseError(c,501,err)
-	}else{
-		js,_:=json.Marshal(area)
+	if area, err := (&dao.Area{}).Find(c.DefaultQuery("id", "1")); err != nil {
+		middleware.ResponseError(c, 501, err)
+	} else {
+		js, _ := json.Marshal(area)
 		middleware.ResponseSuccess(c, string(js))
 	}
 	return
 }
 
 func (demo *Demo) Redis(c *gin.Context) {
-	redisKey:="redis_key"
-	lib.RedisConfDo(public.GetTraceContext(c),"default",
-		"SET",redisKey,"redis_value")
-	redisValue,err:=redis.String(lib.RedisConfDo(public.GetTraceContext(c),"default",
-		"GET",redisKey))
-	if err!=nil{
-		middleware.ResponseError(c,501,err)
+	redisKey := "redis_key"
+	public.RedisConfDo(public.GetTraceContext(c), "default",
+		"SET", 0, redisKey, "redis_value")
+	redisValue, err := redis.String(public.RedisConfDo(public.GetTraceContext(c), "default",
+		"GET", 0, redisKey))
+	if err != nil {
+		middleware.ResponseError(c, 501, err)
 		return
 	}
 	middleware.ResponseSuccess(c, redisValue)
@@ -52,9 +52,9 @@ func (demo *Demo) Redis(c *gin.Context) {
 }
 
 func (demo *Demo) Bind(c *gin.Context) {
-	st:=&dto.InStruct{}
-	if err:=st.BindingValidParams(c);err!=nil{
-		middleware.ResponseError(c,500,err)
+	st := &dto.InStruct{}
+	if err := st.BindingValidParams(c); err != nil {
+		middleware.ResponseError(c, 500, err)
 		return
 	}
 	middleware.ResponseSuccess(c, "")

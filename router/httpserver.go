@@ -2,39 +2,43 @@ package router
 
 import (
 	"context"
-	"tbwisk/common/lib"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"tbwisk/public"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
-	HttpSrvHandler *http.Server
+	//HTTPSrvHandler 服务
+	HTTPSrvHandler *http.Server
 )
 
-func HttpServerRun() {
-	gin.SetMode(lib.ConfBase.DebugMode)
+//HTTPServerRun 服务启动
+func HTTPServerRun() {
+	gin.SetMode(public.DebugMode)
 	r := InitRouter()
-	HttpSrvHandler = &http.Server{
-		Addr:           lib.GetStringConf("base.http.addr"),
+	HTTPSrvHandler = &http.Server{
+		Addr:           public.GetStringConf("http", "addr"),
 		Handler:        r,
-		ReadTimeout:    time.Duration(lib.GetIntConf("base.http.read_timeout")) * time.Second,
-		WriteTimeout:   time.Duration(lib.GetIntConf("base.http.write_timeout")) * time.Second,
-		MaxHeaderBytes: 1 << uint(lib.GetIntConf("base.http.max_header_bytes")),
+		ReadTimeout:    time.Duration(public.GetIntConf("http", "read_timeout")) * time.Second,
+		WriteTimeout:   time.Duration(public.GetIntConf("http", "write_timeout")) * time.Second,
+		MaxHeaderBytes: 1 << uint(public.GetIntConf("http", "max_header_bytes")),
 	}
 	go func() {
-		log.Printf(" [INFO] HttpServerRun:%s\n",lib.GetStringConf("base.http.addr"))
-		if err := HttpSrvHandler.ListenAndServe(); err != nil {
-			log.Fatalf(" [ERROR] HttpServerRun:%s err:%v\n", lib.GetStringConf("base.http.addr"), err)
+		log.Printf(" [INFO] HttpServerRun:%s\n", public.GetStringConf("http", "addr"))
+		if err := HTTPSrvHandler.ListenAndServe(); err != nil {
+			log.Fatalf(" [ERROR] HttpServerRun:%s err:%v\n", public.GetStringConf("http", "addr"), err)
 		}
 	}()
 }
 
-func HttpServerStop() {
+//HTTPServerStop 服务停止
+func HTTPServerStop() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := HttpSrvHandler.Shutdown(ctx); err != nil {
+	if err := HTTPSrvHandler.Shutdown(ctx); err != nil {
 		log.Fatalf(" [ERROR] HttpServerStop err:%v\n", err)
 	}
 	log.Printf(" [INFO] HttpServerStop stopped\n")
